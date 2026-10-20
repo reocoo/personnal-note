@@ -1,0 +1,18 @@
+# 统一行尾：仓库内一律 LF，检出时按平台自动转
+# 配合 git config core.autocrlf=input（本机已设）
+* text=auto eol=lf
+
+# 明确二进制类型，禁止 Git 尝试转换
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.webp binary
+*.ico binary
+*.pdf binary
+*.zip binary
+*.mp4 binary
+*.mp3 binary
+*.woff binary
+*.woff2 binary
+*.ttf binary

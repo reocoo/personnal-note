@@ -1,0 +1,47 @@
+# ===== 笔记仓库专用 =====
+# 2026-10-20 建。目标是只同步「自己写的笔记」，不放任何工具产物。
+
+# --- Python ---
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+*.egg-info/
+
+# --- Node ---
+node_modules/
+.pnpm-store/
+
+# --- Obsidian ---
+.obsidian/workspace*
+.obsidian/workspace-mobile.json
+.obsidian/.*.json.bak
+.trash/
+
+# --- 操作系统垃圾 ---
+.DS_Store
+._*
+Thumbs.db
+desktop.ini
+ehthumbs.db
+
+# --- 编辑器 / IDE ---
+.vscode/*
+!.vscode/settings.json
+.idea/
+*.swp
+*.swo
+
+# --- 临时与日志 ---
+*.tmp
+*.temp
+*.bak
+*.old
+*.log
+~$*
+
+# --- 本仓库特有：第三方/vendor 内容不同步 ---
+# 这里是个人笔记仓库，不是代码仓库。
+# 万一以后往里放了参考资料，先确认许可再放行。
+vendor/
