@@ -14,9 +14,10 @@ node_modules/
 .pnpm-store/
 
 # --- Obsidian ---
-.obsidian/workspace*
-.obsidian/workspace-mobile.json
-.obsidian/.*.json.bak
+# 2026-10-20 用户选择「只同步笔记内容」，所以整个 .obsidian 都不上去。
+# 好处：插件 main.js 几 MB、workspace.json 每次开合都变，都不会污染仓库。
+# 代价：换电脑要重装插件 —— 但有这份 .gitignore 和本文件在，重建很快。
+.obsidian/
 .trash/
 
 # --- 操作系统垃圾 ---
