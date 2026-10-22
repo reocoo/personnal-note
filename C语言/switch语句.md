@@ -1,4 +1,4 @@
-switch在python中对应match
+//switch在python中对应match
 ```c
 switch(a)
 {
