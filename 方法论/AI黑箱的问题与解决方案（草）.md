@@ -20,23 +20,26 @@ ComfyUI，一个ai视觉创作工具，最近才进入我的视野。但是相�
 
 **验收标准**（写给自己，防止这个目标无限延伸）：能回答「这次结果不对，是哪一步偏的」，就算入门；能在不重跑整条流程的前提下改那一处并验证，就算达成。
 
+**补充事实（2026-10-23 实测）**：这条路线不用从零开始 —— 本机 `~\.dsh\sessions` 里已经有 **486 个会话文件 / 131.5 MB**（解压 477 MB），全量扫描 **3.98 秒**，**不装任何插件就能读**。里面已有工具调用、reasoning 全过程；缺的是 token 用量与延迟（`usage`/`duration`/`ttft` 字段完全不存在）。详细拆解见 `60-AI黑箱观测\PLAN.md`。
+
 
 
 # 1.可观测性
 打开黑箱的第一步是观测，除了原生日志可用的插件有
-- dsh-sseye（就像DevTool），展示调用内容，保留turn/step归因
-- dsh-insider 展示插件、服务等之间关系图谱
--  @loongsuite/dsh-plugin 把事件转换标准格式otel，接入专业监控系统
-- langfuse：（待补：它跟上面三个的分工是什么，从哪看到的）
+- dsh-sseye（就像DevTool），展示调用内容，保留turn/step归因 → **已核实**：真包 `dsh-sseye@0.4.4`（MIT），README 明示支持 DSH `0.2.0-rc.2`。**desktop 版不能在命令行装**（CLI 拒绝 `--profile desktop`），要走应用内侧边栏 Plugins 页
+- ~~dsh-insider~~ → **真包名 `@howardchan/dsh-insider`**（0.1.8），展示插件、服务等之间关系图谱。**风险**：开发基线是 DSH `0.1.5-rc.1`，未验证 `0.2.0-rc.2` —— 跟 25 号 context-lens 失败是同一类原因（上游 API 拆名 → `failed to import`）
+-  @loongsuite/dsh-plugin 把事件转换标准格式otel，接入专业监控系统 → **已核实**：真包 `@loongsuite/dsh-plugin@0.1.3`
+- langfuse：（待补：它跟上面三个的分工是什么，从哪看到的）→ **已核实**：npm 上的 `langfuse` 是 v3 SDK，**官方已标废弃**；且需要外部后端服务，**本机没装 Docker**，装不了
 
 # 2.可视化
 我毕竟还是新手，对于大量的信息，可视化是让我快速理解的有效途径。像剥洋葱般，从外到内，~~第一步应该是展示agent的工作流~~（先有观测数据才画得出图，所以可视化排在观测之后）。也许可以利用canvas？
  可用的插件有：
- - workflow-studio：结构图，依赖的连线，时间线泳道，常驻进度条
+ - ~~workflow-studio：结构图，依赖的连线，时间线泳道，常驻进度条~~
+   → **核实有误**：`workflow-studio` 是 Vercel Workflow DevKit 的 devtools，**不是 DSH 插件**，装不上。这条原记录错误，保留划线存档
 # 3.可复用化
 可视化的最终目的是让工作流从“一次性技巧”变成可版本化、可分享的工程资产。
 可用的插件有
-- dsh-dag-workflow，坚持==一个真源==，把工作流，模版化，文件化
+- ~~dsh-dag-workflow~~ → **真名 `@dsh-external/workflow`**（GitHub 149⭐），坚持==一个真源==，把工作流，模版化，文件化。**注意**：npm 上没有叫 `dsh-dag-workflow` 的包；且它的 `compatibility.json` 钉死 DSH `0.0.1-rc.2` 快照，本机是 `0.2.0-rc.2`，差一个大版本，装前必须先验兼容
 - dsh-external/workflow，将工作流升级为具备命名、暂停/恢复、按快照重跑、成本记录和持久化证据的完整产品层，让多 Agent 流程变成可审计、可分享的团队资产。
 
 
