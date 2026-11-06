@@ -2,7 +2,11 @@
 status: 占用
 updated: 2026-11-04
 ttl: 365d
-tags: [方法论, AI使用, Boris, Anthropic, ClaudeCode]
+tags:
+  - AI使用
+  - Boris
+  - Anthropic
+  - ClaudeCode
 ---
 
 # Boris · Claude Code 创作者 13 条
