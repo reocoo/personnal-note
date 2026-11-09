@@ -760,7 +760,7 @@ len(raw.split("\n")) = 20              ← 但这个 20 里含末尾换行算出
 | **叠加不覆盖** | 差异可能来自变量不可控，不该判谁对 | 同结果 → 次数 +1；不同结果 → 顶部新增小节，不删旧的 | 连跑三次，看小节编号 1 / 2,1 / 3,2,1 |
 | **永不标「已推翻」** | 标了就等于替未来的自己下判断 | 全文禁词「已推翻 / 已失效 / superseded」，判据 D5 扫 | `grep` 全库零命中 |
 | **候选池 + 采纳**：抽取与写入分离 | 抽取会错，直接写进人格层会污染每一句话 | 抽取只产候选（`proposals/` + `backfill/out/`）；采纳才写 `prompt-inject.md` | 候选池统计：总数 84 / 已采纳 4 / 待处理 80 |
-| **三段通道分工** | 「半年后还成立」和「这次任务才成立」是两回事 | 长期 → 人格层；本会话 → 活跃偏好；可验证 → 事实 wiki | 见 9.5 判据表 |
+| **三段通道分工** | 「半年后还成立」和「这次任务才成立」是两回事 | 长期 → 人格层；本会话 → 活跃偏好；可验证 → 事实 wiki | 见 9.6 判据清单 |
 | **主模型通道有上限** | 模型自批必然有误判，靠「可撤销」不靠「猜得准」 | 每轮最多 8 条；强制写理由（≥4 字）；`by=model` 标记；一条命令全撤且不动 `by=human` | 造 9 条测试，第 9 条被拒；理由为空被拒 |
 
 ### 9.3 会话内活跃偏好（这是最后加的一层）
@@ -871,10 +871,29 @@ python "86-Dreaming记忆维护\tools\candidate_pool.py" --adopted
 
 # 主模型采纳了什么（含理由）
 python "86-Dreaming记忆维护\tools\adopt_as_model.py" --review
+
+# 判据总数（数实际打出的 PASS 行，不数源码）
+cd "86-Dreaming记忆维护\tools"
+$n = 0
+foreach ($t in Get-ChildItem test_l*.py) {
+    $n += ([regex]::Matches((python $t 2>&1 | Out-String), '\[PASS\]')).Count
+}
+$n
+
+# 技能索引体量（description 按 UTF-8 字节算）
+Get-ChildItem "$env:USERPROFILE\.dsh\skills" -Directory | ForEach-Object {
+    $sk = Join-Path $_.FullName "SKILL.md"
+    if (Test-Path $sk) {
+        $txt = Get-Content $sk -Raw -Encoding UTF8
+        if ($txt -match '(?m)^description:\s*(.+)$') {
+            [System.Text.Encoding]::UTF8.GetByteCount($matches[1])
+        }
+    }
+} | Measure-Object -Sum
 ```
 
 项目全部证据：`86-Dreaming记忆维护\`
-- `_安全网\criteria\L0.json ~ L14.json`（15 段，**97 条实际执行的判据**）
+- `_安全网\criteria\L0.json ~ L18.json`（19 段，**122 条实际执行的判据**）
 - `runs\`（每次机械档扫描的原始结果）
 - `digests\`（每日会话摘要）
 - `proposals\`（每日抽取的候选）
@@ -886,13 +905,16 @@ python "86-Dreaming记忆维护\tools\adopt_as_model.py" --review
 - `12-历史全量回填.md`
 - `13-候选栏与采纳.md`
 - `14-跟随光标与双向取消.md`
+- `15-会话内动态采纳.md`
+- `16-活跃偏好-模型侧规程.md`
 
-> **「97 条」是怎么数的**：数的不是源码里的 `res.append(` 次数（那是 95），
+> **「122 条」是怎么数的**：数的不是源码里的 `res.append(` 次数（那个数更少），
 > 而是 `test_l*.py` **实际往屏幕上打出的 `[PASS]/[FAIL]` 行数**。
-> 差的那 2 条是 L10 的「生产文件未被测试改动」和 L14 的「附加 结构完整」——
-> 它们用不同写法加的，正则抓不到。
+> 2026-11-09 早先写成「97 条/15 段」是对的，那是 L14 完成时的状态；
+> 加了 L15~L18 之后变成 122 条/18 段（L1 不计入，它现在本来就报失败）。
 >
-> **这个差异本身就是「判据要先验」的例子**：源码计数和运行时输出能不一样。
+> **这个数一路变过三次**（95 → 97 → 122），每次都是「源码计数」与「运行时输出」不一致。
+> 这本身就是「判据要先验」的例子。
 
 ### ⚠️ 一条关于「旧判据会过期」的提醒
 
