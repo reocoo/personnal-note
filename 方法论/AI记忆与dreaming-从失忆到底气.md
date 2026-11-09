@@ -62,12 +62,16 @@ tags: [方法论, 记忆系统, dreaming, 上下文预算, DSH]
 本机实测的数字（2026-11-09）：
 
 ```
-人格文件 prompt-inject.md        34,241 B   每轮注入
+人格文件 prompt-inject.md        36,014 B   每轮注入
 工作区 AGENTS.md                 29,501 B   每轮注入
 技能索引（129 条 description）   约 42,000 B  每轮注入
 ─────────────────────────────────────────────
-每轮固定花掉                    约 105 KB
+每轮固定花掉                    约 108 KB
 ```
+
+> **体量会变。** 上面这组数是 2026-11-09 13:10 的实测值，随采纳候选而增长
+> （34,241 → 36,014 就是因为采纳了 3 条）。
+> 要当前值就跑：`(Get-Item "$env:USERPROFILE\.dsh\prompt-inject.md").Length`
 
 **这就是为什么不能什么都塞进去。** 每轮预算有限，塞满了会静默截断——
 2026-10-28 实测过：登记表塞得太满，注入被截到 64,428 字节，尾部整段丢失，**而且不报错**。
@@ -313,9 +317,9 @@ Background subagent                    77 处
 
 2026-11-09 查清的结构：
 
-| 通道 | 文件 | 机制 | 体量 |
+| 通道 | 文件 | 机制 | 体量（2026-11-09） |
 |---|---|---|---|
-| **systemPrompt** | `~/.dsh/prompt-inject.md` | `dsh-purge` 插件读它注入 | 34,241 B |
+| **systemPrompt** | `~/.dsh/prompt-inject.md` | `dsh-purge` 插件读它注入 | 36,014 B |
 | **home 级作业指令** | `~/.dsh/AGENTS.md` | `dsh-agent-instructions`，以 `<system-reminder>` 注入 | 4,619 B |
 | **工作区作业指令** | `DSH工作区\AGENTS.md` | 同上 | 29,501 B |
 
